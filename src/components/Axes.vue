@@ -11,10 +11,10 @@ import * as d3 from 'd3'
  * @type {Object}
  */
 const DEFAULTLINE = {
-  // stroke: {string},
-  // opacity: {number},
-  // lineWidth: {number},
-  lineDash: [4, 4]
+  stroke: '#666', // 坐标轴线的颜色
+  opacity: 1, // 坐标轴线的透明度，数值范围为 0 - 1
+  width: 1, // 设置坐标轴线的粗细
+  lineDash: [4, 0] // 坐标轴线的虚线配置，第一个参数描述虚线的实部占多少像素，第二个参数描述虚线的虚部占多少像素
 }
 
 /**
@@ -348,6 +348,8 @@ export default {
       const axisFn = this.getFn()
       const fn = this.getAxis()(axisFn)
       axis.call(fn)
+      // set line style
+      this.setLineStyle()
       // set label style
       this.setLabelStyle()
       // Create axis title
@@ -450,6 +452,16 @@ export default {
       axisFn.tickPadding(offset)
       return axisFn
     },
+    setLineStyle () {
+      const { lineOpt } = this
+      const {stroke, opacity, width, lineDash} = lineOpt
+      const path = d3.select(this.$el).select('.axis').select('path')
+      path
+      .attr('stroke', stroke)
+      .attr('stroke-width', width)
+      .attr('stroke-dasharray', lineDash.join(','))
+      .style('opacity', opacity)
+    },
     /**
      * Set label style
     */
@@ -498,6 +510,7 @@ export default {
       const { lineStyle, hideFirstLine, hideLastLine } = gridOpt
       const { stroke, opacity, width, lineDash } = lineStyle
       const grid = d3.select(this.$el).select('.grid')
+      grid.select('path').remove()
       grid.selectAll('line')
       .attr('stroke', stroke)
       .attr('stroke-width', width)
