@@ -41,7 +41,8 @@ const DEFAULTGRID = {
   enabled: false,
   lineStyle: {
     stroke: '#d9d9d9', // 网格线的颜色
-    lineWidth: 1, // 网格线的粗细
+    opacity: 1, // 网格线的透明度，数值范围为 0 - 1
+    width: 1, // 网格线的粗细
     lineDash: [4, 4] // 网格线的虚线配置，第一个参数描述虚线的实部占多少像素，第二个参数描述虚线的虚部占多少像素
   },
   hideFirstLine: false, // 是否隐藏第一条网格线，默认为 true
@@ -376,12 +377,13 @@ export default {
     renderGridStyle () {
       const { gridOpt } = this
       const { lineStyle, hideFirstLine, hideLastLine } = gridOpt
-      const { stroke, opacity, lineWidth } = lineStyle
+      const { stroke, opacity, width, lineDash } = lineStyle
       const grid = d3.select(this.$el).select('.grid')
       grid.selectAll('line')
       .attr('stroke', stroke)
+      .attr('stroke-width', width)
+      .attr('stroke-dasharray', lineDash.join(','))
       .style('opacity', opacity)
-      .style('lineWidth', lineWidth)
       const ticks = grid.selectAll('.tick')
       const gridSize = ticks.size()
       const filterFn = function (index) {
